@@ -148,5 +148,18 @@ def create_tables():
         )
     ''')
     
+    # ── Performance Indexes ──────────────────────────────────────────────────
+    # These are created with IF NOT EXISTS so they are safe to run repeatedly
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_orders_status    ON orders(status)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_orders_risk      ON orders(risk)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_orders_priority  ON orders(priority_score)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_products_avail   ON products(available)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_products_reorder ON products(reorder_level)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_exceptions_status ON exceptions(status)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_notifications_read ON notifications(read)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_decision_log_type ON decision_log(type)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_workflow_order    ON workflow_events(order_id)")
+
     conn.commit()
     conn.close()

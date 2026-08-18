@@ -22,6 +22,46 @@ app = Flask(
 )
 CORS(app) # Enable CORS for frontend connection
 
+# Security: limit request body size to 1 MB
+app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024
+
+# Security: inject security headers on every response
+@app.after_request
+def add_security_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    response.headers['Content-Security-Policy'] = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline'; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+        "font-src 'self' https://fonts.gstatic.com; "
+        "img-src 'self' data:;"
+    )
+    return response
+
+import re as _re
+
+def _validate_order_id(oid):
+    """Validate order ID format: ORD-NNNN"""
+    return bool(_re.match(r'^ORD-\d{4}$', str(oid)))
+
+def _validate_sku(sku):
+    """Validate product SKU format: P-NNN or similar"""
+    return bool(_re.match(r'^P-\d+$', str(sku)))
+
+def _validate_chat_query(query):
+    """Validate chat query: non-empty, max 500 chars"""
+    if not query or not isinstance(query, str):
+        return False, 'Query must be a non-empty string'
+    q = query.strip()
+    if len(q) == 0:
+        return False, 'Query cannot be empty'
+    if len(q) > 500:
+        return False, 'Query must not exceed 500 characters'
+    return True, q
+
 # Helper to serialize sqlite rows to dictionary
 def row_to_dict(row):
     return dict(row) if row else None
@@ -1442,10 +1482,12 @@ def optimize_picking_batch():
 @app.route('/api/intelligence/chat', methods=['POST'])
 def query_intelligence():
     data = request.json or {}
-    query = data.get('query', '')
-    if not query:
-        return jsonify({'response': "Please enter a valid query."}), 400
-    
+    raw_query = data.get('query', '')
+    valid, result = _validate_chat_query(raw_query)
+    if not valid:
+        return jsonify({'error': result}), 400
+    query = result
+
     query_lower = query.lower()
     conn = get_db_connection()
     cursor = conn.cursor()

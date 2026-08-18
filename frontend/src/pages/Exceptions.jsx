@@ -34,17 +34,18 @@ export default function Exceptions({ exceptions, onSelectException }) {
 
       {/* Exception list table */}
       <div className="bg-brand-surface border border-brand-border rounded-xl overflow-hidden shadow-lg">
-        <table className="w-full text-left text-xs">
+        <table className="w-full text-left text-xs" aria-label="Warehouse exception events">
+          <caption className="sr-only">Active and resolved warehouse exceptions requiring attention</caption>
           <thead className="bg-brand-charcoal text-gray-400 border-b border-brand-border uppercase text-[9px] tracking-wider">
             <tr>
-              <th className="p-3.5">ID</th>
-              <th className="p-3.5">Exception Type</th>
-              <th className="p-3.5 text-center">Severity</th>
-              <th className="p-3.5">Affected Entity</th>
-              <th className="p-3.5">Product SKU</th>
-              <th className="p-3.5">Detected At</th>
-              <th className="p-3.5 text-center">Status</th>
-              <th className="p-3.5 text-center">Actions</th>
+              <th scope="col" className="p-3.5">ID</th>
+              <th scope="col" className="p-3.5">Exception Type</th>
+              <th scope="col" className="p-3.5 text-center">Severity</th>
+              <th scope="col" className="p-3.5">Affected Entity</th>
+              <th scope="col" className="p-3.5">Product SKU</th>
+              <th scope="col" className="p-3.5">Detected At</th>
+              <th scope="col" className="p-3.5 text-center">Status</th>
+              <th scope="col" className="p-3.5 text-center">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-brand-border/30 text-gray-300">
@@ -75,6 +76,7 @@ export default function Exceptions({ exceptions, onSelectException }) {
                       {exp.status === 'Active' ? (
                         <button
                           onClick={() => onSelectException(exp)}
+                          aria-label={`Resolve exception ${exp.id} – ${exp.type}`}
                           className="bg-brand-accent text-brand-navy text-[10px] font-bold px-3 py-1 rounded hover:bg-brand-accent/90 transition-colors cursor-pointer"
                         >
                           Resolve

@@ -29,7 +29,10 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
   ]
 
   return (
-    <aside className="w-64 bg-brand-charcoal border-r border-brand-border flex flex-col justify-between h-full select-none">
+    <aside
+      className="w-64 bg-brand-charcoal border-r border-brand-border flex flex-col justify-between h-full select-none"
+      aria-label="Application sidebar"
+    >
       <div>
         {/* Brand Logo */}
         <div className="p-6 flex items-center gap-3 border-b border-brand-border">
@@ -43,7 +46,7 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
         </div>
 
         {/* Navigation Menu */}
-        <nav className="p-4 space-y-1.5 flex-1 overflow-y-auto">
+        <nav className="p-4 space-y-1.5 flex-1 overflow-y-auto" aria-label="Main navigation">
           {menuItems.map((item) => {
             const Icon = item.icon
             const isActive = currentPage === item.id
@@ -51,6 +54,8 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
               <button
                 key={item.id}
                 onClick={() => setCurrentPage(item.id)}
+                aria-label={item.label}
+                aria-current={isActive ? 'page' : undefined}
                 className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group ${
                   isActive 
                     ? 'bg-brand-accent/10 text-brand-accent border border-brand-accent/20 shadow-md shadow-brand-accent/5' 
@@ -71,6 +76,8 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
       <div className="p-4 border-t border-brand-border bg-brand-navy/30">
         <button
           onClick={() => setCurrentPage('settings')}
+          aria-label="Settings"
+          aria-current={currentPage === 'settings' ? 'page' : undefined}
           className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-gray-200 hover:bg-gray-800/40 transition-all duration-200 ${
             currentPage === 'settings' ? 'bg-brand-accent/10 text-brand-accent' : ''
           }`}

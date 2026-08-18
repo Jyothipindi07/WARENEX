@@ -43,6 +43,7 @@ export default function Copilot({
     return (
       <button
         onClick={() => setIsOpen(true)}
+        aria-label="Open WARENEX Intelligence chat assistant"
         className="fixed bottom-6 right-6 bg-brand-purple hover:bg-brand-purple/90 text-white px-4 py-2.5 rounded-xl shadow-2xl z-40 btn-transition border border-brand-purple/50 animate-pulse cursor-pointer flex items-center gap-2"
         title="Open WARENEX Copilot"
       >
@@ -184,6 +185,7 @@ export default function Copilot({
         </div>
         <button 
           onClick={() => setIsOpen(false)}
+          aria-label="Collapse WARENEX Intelligence panel"
           className="text-[10px] text-gray-400 hover:text-gray-200 border border-brand-border px-2 py-1 rounded-lg hover:bg-gray-800 flex items-center gap-0.5 cursor-pointer"
           title="Collapse Panel"
         >
@@ -192,7 +194,13 @@ export default function Copilot({
       </div>
 
       {/* Message List */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-brand-navy/10 scrollbar-thin">
+      <div
+        className="flex-1 overflow-y-auto p-4 space-y-4 bg-brand-navy/10 scrollbar-thin"
+        role="log"
+        aria-label="WARENEX Intelligence conversation"
+        aria-live="polite"
+        aria-relevant="additions"
+      >
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} w-full`}>
             <div className={`flex gap-2 max-w-[90%] ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
@@ -272,15 +280,16 @@ export default function Copilot({
 
         {/* Loading Indicator */}
         {loading && (
-          <div className="flex justify-start w-full">
+          <div className="flex justify-start w-full" aria-live="polite">
             <div className="flex gap-2 max-w-[90%]">
-              <div className="h-7 w-7 rounded-full border border-brand-purple/35 bg-brand-purple/15 text-brand-purple flex items-center justify-center shrink-0">
+              <div className="h-7 w-7 rounded-full border border-brand-purple/35 bg-brand-purple/15 text-brand-purple flex items-center justify-center shrink-0" aria-hidden="true">
                 <Bot className="h-4 w-4" />
               </div>
               <div className="bg-brand-charcoal border border-brand-border/80 p-3 rounded-xl rounded-tl-none flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 bg-brand-purple rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                <span className="w-1.5 h-1.5 bg-brand-purple rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                <span className="w-1.5 h-1.5 bg-brand-purple rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                <span className="sr-only">WARENEX Intelligence is thinking...</span>
+                <span className="w-1.5 h-1.5 bg-brand-purple rounded-full animate-bounce" style={{ animationDelay: '0ms' }} aria-hidden="true"></span>
+                <span className="w-1.5 h-1.5 bg-brand-purple rounded-full animate-bounce" style={{ animationDelay: '150ms' }} aria-hidden="true"></span>
+                <span className="w-1.5 h-1.5 bg-brand-purple rounded-full animate-bounce" style={{ animationDelay: '300ms' }} aria-hidden="true"></span>
               </div>
             </div>
           </div>
@@ -310,23 +319,29 @@ export default function Copilot({
       {/* Input Form */}
       <div className="p-3 border-t border-brand-border bg-brand-surface shrink-0">
         <div className="flex gap-2">
+          <label htmlFor="copilot-input" className="sr-only">Ask WARENEX Intelligence</label>
           <input
+            id="copilot-input"
             type="text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={loading}
             placeholder="Ask WARENEX Intelligence..."
+            aria-label="Type your warehouse question here"
+            aria-describedby="copilot-hint"
             className="flex-1 bg-brand-navy border border-brand-border rounded-lg px-3 py-2 text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-brand-purple/60 disabled:opacity-50"
           />
           <button
             onClick={() => handleSend()}
             disabled={loading || !inputText.trim()}
+            aria-label="Send message to WARENEX Intelligence"
             className="bg-brand-purple hover:bg-brand-purple/90 text-white p-2 rounded-lg disabled:opacity-40 disabled:hover:bg-brand-purple shrink-0 cursor-pointer flex items-center justify-center transition-colors"
           >
-            <Send className="h-3.5 w-3.5" />
+            <Send className="h-3.5 w-3.5" aria-hidden="true" />
           </button>
         </div>
+        <p id="copilot-hint" className="sr-only">Press Enter or click Send to submit your question</p>
       </div>
 
       {/* Footer Health Score */}

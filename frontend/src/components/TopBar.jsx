@@ -38,15 +38,17 @@ export default function TopBar({
   return (
     <header className="h-16 border-b border-brand-border bg-brand-charcoal flex items-center justify-between px-6 select-none z-20 relative">
       {/* Search Bar */}
-      <div className="flex-1 max-w-md relative">
+      <div className="flex-1 max-w-md relative" role="search">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <Search className="h-4.5 w-4.5 text-gray-400" />
+          <Search className="h-4.5 w-4.5 text-gray-400" aria-hidden="true" />
         </div>
         <input
-          type="text"
+          type="search"
+          id="global-search"
           value={searchQuery}
           onChange={handleSearchChange}
           placeholder="Search by Order ID, SKU, Product, or Customer..."
+          aria-label="Search orders, inventory, products and customers"
           className="w-full bg-brand-navy border border-brand-border rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-brand-accent transition-colors"
         />
       </div>
@@ -57,6 +59,7 @@ export default function TopBar({
         {/* Run Demo Button */}
         <button
           onClick={onTriggerDemo}
+          aria-label="Run Smart Warehouse Demo to simulate live order events"
           className="bg-brand-purple/20 hover:bg-brand-purple/30 text-brand-purple border border-brand-purple/40 px-3.5 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider btn-transition flex items-center gap-2"
         >
           <span className="pulse-dot h-2.5 w-2.5 rounded-full bg-brand-purple inline-block"></span>
@@ -65,10 +68,13 @@ export default function TopBar({
 
         {/* Warehouse Selector */}
         <div className="flex items-center gap-2 bg-brand-navy border border-brand-border px-3 py-1.5 rounded-lg text-xs text-gray-300">
-          <MapPin className="h-3.5 w-3.5 text-brand-accent" />
-          <select 
+          <MapPin className="h-3.5 w-3.5 text-brand-accent" aria-hidden="true" />
+          <label htmlFor="warehouse-select" className="sr-only">Select warehouse</label>
+          <select
+            id="warehouse-select"
             value={selectedWarehouse}
             onChange={(e) => setSelectedWarehouse(e.target.value)}
+            aria-label="Select active warehouse location"
             className="bg-transparent focus:outline-none cursor-pointer"
           >
             <option value="WH-A (Chicago Central)">WH-A (Chicago)</option>
@@ -87,6 +93,9 @@ export default function TopBar({
         <div className="relative">
           <button 
             onClick={() => setShowNotifications(!showNotifications)}
+            aria-label={`Notifications — ${unreadCount} unread alert${unreadCount !== 1 ? 's' : ''}`}
+            aria-expanded={showNotifications}
+            aria-haspopup="true"
             className="relative p-2 text-gray-400 hover:text-gray-200 bg-brand-navy border border-brand-border hover:border-gray-700 rounded-lg transition-colors cursor-pointer"
           >
             <Bell className="h-4.5 w-4.5" />

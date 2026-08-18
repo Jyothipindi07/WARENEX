@@ -207,27 +207,28 @@ export default function Orders({
 
       {/* Orders Table */}
       <div className="bg-brand-surface border border-brand-border rounded-xl overflow-hidden shadow-lg">
-        <table className="w-full text-left text-xs">
+        <table className="w-full text-left text-xs" aria-label="Fulfillment order queue">
+          <caption className="sr-only">Warehouse orders showing status, priority, SLA risk, and actions</caption>
           <thead className="bg-brand-charcoal text-gray-400 border-b border-brand-border uppercase text-[9px] tracking-wider select-none">
             <tr>
-              <th className="p-3.5 cursor-pointer hover:text-brand-accent transition-colors" onClick={() => handleSort('id')}>
+              <th scope="col" className="p-3.5 cursor-pointer hover:text-brand-accent transition-colors" onClick={() => handleSort('id')} aria-sort="none">
                 <div className="flex items-center gap-1">
                   <span>Order ID</span>
-                  <ArrowUpDown className="h-3 w-3" />
+                  <ArrowUpDown className="h-3 w-3" aria-hidden="true" />
                 </div>
               </th>
-              <th className="p-3.5">Customer</th>
-              <th className="p-3.5 text-center">Items</th>
-              <th className="p-3.5 cursor-pointer hover:text-brand-accent transition-colors" onClick={() => handleSort('value')}>
+              <th scope="col" className="p-3.5">Customer</th>
+              <th scope="col" className="p-3.5 text-center">Items</th>
+              <th scope="col" className="p-3.5 cursor-pointer hover:text-brand-accent transition-colors" onClick={() => handleSort('value')} aria-sort="none">
                 <div className="flex items-center gap-1">
                   <span>Value</span>
-                  <ArrowUpDown className="h-3 w-3" />
+                  <ArrowUpDown className="h-3 w-3" aria-hidden="true" />
                 </div>
               </th>
-              <th className="p-3.5 cursor-pointer hover:text-brand-accent transition-colors text-center" onClick={() => handleSort('priority_score')}>
+              <th scope="col" className="p-3.5 cursor-pointer hover:text-brand-accent transition-colors text-center" onClick={() => handleSort('priority_score')} aria-sort="none">
                 <div className="flex items-center gap-1 justify-center">
                   <span>Priority</span>
-                  <ArrowUpDown className="h-3 w-3" />
+                  <ArrowUpDown className="h-3 w-3" aria-hidden="true" />
                 </div>
               </th>
               <th className="p-3.5 cursor-pointer hover:text-brand-accent transition-colors" onClick={() => handleSort('sla_deadline')}>
