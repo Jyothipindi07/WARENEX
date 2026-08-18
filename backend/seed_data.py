@@ -1,8 +1,8 @@
 import sqlite3
 import datetime
 import random
-from database import get_db_connection
-from models import create_tables
+from .database import get_db_connection
+from .models import create_tables
 
 def seed_database():
     # Make sure tables exist

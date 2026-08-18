@@ -9,5 +9,5 @@ def get_db_connection():
     return conn
 
 def init_db():
-    from models import create_tables
+    from .models import create_tables
     create_tables()

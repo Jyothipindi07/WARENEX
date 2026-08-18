@@ -4,9 +4,9 @@ import datetime
 import os
 import random
 
-from database import get_db_connection
-from seed_data import seed_database
-import decision_engine
+from .database import get_db_connection
+from .seed_data import seed_database
+from . import decision_engine
 
 from pathlib import Path
 
@@ -1456,8 +1456,7 @@ def query_intelligence():
     
     try:
         import re
-        import decision_engine
-        
+
         # Parse health metrics dynamically
         cursor.execute("SELECT COUNT(*) FROM orders")
         total_orders = cursor.fetchone()[0]
