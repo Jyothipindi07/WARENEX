@@ -1,0 +1,8 @@
+{
+  "python.analysis.extraPaths": [
+    "c:/Users/pindi/OneDrive/Desktop/WareHouse/backend",
+    "c:/Users/pindi/OneDrive/Desktop/WareHouse",
+    "backend",
+    "./backend"
+  ]
+}
