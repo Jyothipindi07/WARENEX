@@ -20,26 +20,40 @@ app = Flask(
     static_folder=str(static_folder_path),
     static_url_path="/assets"
 )
-CORS(app) # Enable CORS for frontend connection
+from flask_compress import Compress
+from flask_talisman import Talisman
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
-# Security: limit request body size to 1 MB
+# Set default configs before extensions
 app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024
+app.config.setdefault('RATELIMIT_ENABLED', True)
 
-# Security: inject security headers on every response
-@app.after_request
-def add_security_headers(response):
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    response.headers['X-Frame-Options'] = 'DENY'
-    response.headers['X-XSS-Protection'] = '1; mode=block'
-    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
-    response.headers['Content-Security-Policy'] = (
-        "default-src 'self'; "
-        "script-src 'self' 'unsafe-inline'; "
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
-        "font-src 'self' https://fonts.gstatic.com; "
-        "img-src 'self' data:;"
-    )
-    return response
+# Initialize Flask extensions
+Compress(app) # Gzip/Brotli compression
+
+# Initialize Security Headers
+csp = {
+    'default-src': ["'self'"],
+    'script-src': ["'self'", "'unsafe-inline'"],
+    'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+    'font-src': ["'self'", 'https://fonts.gstatic.com'],
+    'img-src': ["'self'", 'data:'],
+}
+Talisman(app, content_security_policy=csp, force_https=False) # False for local development
+
+# Initialize Rate Limiter globally
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["200 per minute", "5 per second"],
+    storage_uri="memory://"
+)
+
+# Enable CORS for frontend connection explicitly
+CORS(app, resources={r"/api/*": {"origins": "*"}}, methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+
+
 
 import re as _re
 

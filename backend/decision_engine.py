@@ -1,6 +1,8 @@
 import datetime
 import math
+from functools import lru_cache
 
+@lru_cache(maxsize=1024)
 def calculate_priority_score(value, customer, deadline_str, available_stock_ratio=1.0):
     """
     Calculates a deterministic priority score between 0 and 100 based on:

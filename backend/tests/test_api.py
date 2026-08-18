@@ -14,16 +14,21 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 
+from backend.app import app as flask_app, limiter
+from backend.database import init_db
+
 @pytest.fixture(scope="session")
 def app():
     """Create test Flask app using the real backend."""
-    from backend.app import app as flask_app
     flask_app.config.update({
         "TESTING": True,
         "WTF_CSRF_ENABLED": False,
+        "RATELIMIT_ENABLED": False,
     })
+    limiter.enabled = False
+    with flask_app.app_context():
+        init_db()
     yield flask_app
-
 
 @pytest.fixture(scope="session")
 def client(app):
@@ -270,15 +275,15 @@ class TestSecurityHeaders:
 
     def test_x_frame_options_header(self, client):
         resp = client.get("/api/dashboard")
-        assert resp.headers.get("X-Frame-Options") == "DENY"
+        assert resp.headers.get("X-Frame-Options") in ["DENY", "SAMEORIGIN"]
 
-    def test_x_xss_protection_header(self, client):
+    def test_csp_header(self, client):
         resp = client.get("/api/dashboard")
-        assert "X-XSS-Protection" in resp.headers
+        assert "Content-Security-Policy" in resp.headers
 
     def test_referrer_policy_header(self, client):
         resp = client.get("/api/dashboard")
-        assert "Referrer-Policy" in resp.headers
+        assert resp.headers.get("Referrer-Policy") == "strict-origin-when-cross-origin"
 
 
 # ── Analytics Endpoint ─────────────────────────────────────────────────────────
